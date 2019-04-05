@@ -80,4 +80,8 @@ class LoginPopup extends Component {
     }
 }
 
+LoginPopup.propTypes = {
+    signIn: React.PropTypes.func.isRequired,
+};
+
 export default LoginPopup;

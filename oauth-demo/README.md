@@ -66,3 +66,10 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+
+## References
+
+The UI driver is a copy of a React demo UI for public / private redirect:
+
+https://reacttraining.com/react-router/web/example/auth-workflow

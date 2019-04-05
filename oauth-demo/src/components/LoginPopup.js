@@ -6,12 +6,12 @@ class LoginPopup extends Component {
         super(props);
 
         this.state = {
-            show: false,
+            show: false
         };
 
         this.handleShow = this.handleShow.bind(this);
         this.handleClose = this.handleClose.bind(this);
-        this.handleAuthentication = this.handleAuthentication.bind(this);
+        this.handleSignIn = this.handleSignIn.bind(this);
     }
 
     handleClose() {
@@ -22,15 +22,14 @@ class LoginPopup extends Component {
         this.setState({show: true});
     }
 
-    handleAuthentication() {
-        this.props.authenticate();
+    handleSignIn() {
+        this.props.signIn();
         this.handleClose();
     }
 
     render() {
         return (
             <>
-
                 <Button variant="primary" onClick={this.handleShow}>
                     Login
                 </Button>
@@ -44,7 +43,7 @@ class LoginPopup extends Component {
                         <Button variant="secondary" onClick={this.handleClose}>
                             Cancel
                         </Button>
-                        <Button variant="primary" onClick={this.handleAuthentication}>
+                        <Button variant="primary" onClick={this.handleSignIn}>
                             Login
                         </Button>
                     </Modal.Footer>

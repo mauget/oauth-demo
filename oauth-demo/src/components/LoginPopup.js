@@ -6,12 +6,16 @@ class LoginPopup extends Component {
         super(props);
 
         this.state = {
-            show: false
+            show: false,
+            userId: '',
+            password: ''
         };
 
         this.handleShow = this.handleShow.bind(this);
         this.handleClose = this.handleClose.bind(this);
         this.handleSignIn = this.handleSignIn.bind(this);
+        this.onChangeUser = this.onChangeUser.bind(this);
+        this.onChangePassword = this.onChangePassword.bind(this);
     }
 
     handleClose() {
@@ -22,9 +26,21 @@ class LoginPopup extends Component {
         this.setState({show: true});
     }
 
-    handleSignIn() {
-        this.props.signIn();
+    handleSignIn(ev) {
+        ev.preventDefault();
+
+        const {userId, password} = this.state;
+        this.props.signIn({userId, password});
+
         this.handleClose();
+    }
+
+    onChangeUser(ev){
+        this.setState({userId: ev.currentTarget.value});
+    }
+
+    onChangePassword(ev){
+        this.setState({password: ev.currentTarget.value});
     }
 
     render() {
@@ -35,18 +51,29 @@ class LoginPopup extends Component {
                 </Button>
 
                 <Modal show={this.state.show} onHide={this.handleClose}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Modal heading</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={this.handleClose}>
-                            Cancel
-                        </Button>
-                        <Button variant="primary" onClick={this.handleSignIn}>
-                            Login
-                        </Button>
-                    </Modal.Footer>
+                    <form onSubmit={this.handleSignIn}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Log In Via Google Credentials</Modal.Title>
+                        </Modal.Header>
+
+                        <Modal.Body>
+                            <div className="form-group">
+                                <label htmlFor="idUser">Google User</label>
+                                <input type="text"  onChange={this.onChangeUser}
+                                       className="form-control" id="idUser"/>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="isPassword">Password</label>
+                                <input type="password"  onChange={this.onChangePassword}
+                                       className="form-control" id="isPassword"/>
+                            </div>
+                        </Modal.Body>
+
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={this.handleClose}>Cancel</Button>
+                            <Button type={"submit"}  variant="primary" >Login</Button>
+                        </Modal.Footer>
+                    </form>
                 </Modal>
             </>
         )

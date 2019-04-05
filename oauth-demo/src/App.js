@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './App.css';
-import AuthExample from './AuthExample';
+import AuthExample from './components/AuthExample';
 
 class App extends Component {
     render() {

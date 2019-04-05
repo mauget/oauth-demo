@@ -54,7 +54,7 @@ class LoginPopup extends Component {
                 <Modal show={this.state.show} onHide={this.handleClose}>
                     <form onSubmit={this.handleSignIn}>
                         <Modal.Header closeButton>
-                            <Modal.Title>Log In Via Google Credentials</Modal.Title>
+                            <Modal.Title>Log in with Google</Modal.Title>
                         </Modal.Header>
 
                         <Modal.Body>

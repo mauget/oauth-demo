@@ -23,9 +23,9 @@ yarn-debug.log*
 yarn-error.log*
 
 ../.DS_Store
-../cloud.google.com/
-../fly-world/
-../github.com/
-../golang.org/
-../gopkg.in/
+../cloud.google.com
+../fly-world
+../github.com
+../golang.org
+../gopkg.in
 

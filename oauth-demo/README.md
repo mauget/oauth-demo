@@ -3,7 +3,7 @@
 This is a demo for illustrating protecting content access by using third-party authentication via OAuth2.  
 
 
-![]()
+![https://github.com/mauget/oauth-demo/blob/master/oauth-demo/doc/OAuthGoogleLogin.png](https://github.com/mauget/oauth-demo/blob/master/oauth-demo/doc/OAuthGoogleLogin.png)
 
 
 

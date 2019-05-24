@@ -54,7 +54,9 @@ func main() {
 
 func getTestMsg(w http.ResponseWriter, _ *http.Request) {
 
-	t := "Test message from server"
+	now := time.Now()
+
+	t := "Server time " + now.Format("Mon Jan _2 15:04:05 MST 2006")
 
 	err := json.NewEncoder(w).Encode(t)
 	if nil != err {
@@ -163,7 +165,7 @@ func getSession(w http.ResponseWriter, r *http.Request) {
 }
 
 /**
- * A performing, low garbage, skinny-memory, random string generator.
+ * Good-performing, low garbage, skinny-memory, random string generator.
  *
  * e.g.  randstr.RandStringBytesMaskImprSrcUnsafe(32)
  *
@@ -182,6 +184,7 @@ var src = rand.NewSource(time.Now().UnixNano())
 
 func randstr(n int) string {
 	b := make([]byte, n)
+
 	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
 	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
 		if remain == 0 {

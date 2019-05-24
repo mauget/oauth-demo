@@ -18,6 +18,7 @@
             try {
                 const {data} = await api.get(`testmsg`);
                 console.log(`Server response: ${data}`);
+                window.alert(`Server says: "${data}"`)
             } catch (e) {
                 console.error(e);
             }
@@ -53,6 +54,7 @@
             try {
                 const {data} = await api.get('session');
                 console.log(`onTestSession response: ${data}`);
+                window.alert(`In-session: ${data}`)
             } catch (e) {
                 console.error(e);
                 alert('onTestSession failed');
@@ -62,7 +64,6 @@
 
         render() {
 
-            // noinspection JSXNamespaceValidation
             const renderLoginForm = (
                 <form onSubmit={this.logInHandler}>
                     <label htmlFor={"userID"}>User ID:
@@ -81,22 +82,24 @@
 
             const renderSessionTest = <button onClick={this.onTestSession}>Test Session</button>;
 
-            const renderLogFromServer = <button onClick={() => this.logMessage()}>Log Message</button>;
+            const renderServerMsg = <button onClick={() => this.logMessage()}>Server Message</button>;
 
-            // noinspection JSXNamespaceValidation,JSUnresolvedFunction
             return (
                 <div>
-                    {renderLogFromServer}
+                    {renderServerMsg}
 
                     <br/>
                     <br/>
+
                     {renderLoginForm}
                     <br/>
                     <br/>
 
                     {renderLogout}
+
                     <br/>
                     <br/>
+
                     {renderSessionTest}
                 </div>
             );
@@ -104,7 +107,6 @@
     }
 
     const domContainer = document.querySelector('#root');
-    // noinspection JSUnresolvedVariable
     ReactDOM.render(React.createElement(App), domContainer);
 
     //===========================================================================

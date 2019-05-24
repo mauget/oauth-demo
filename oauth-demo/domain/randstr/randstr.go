@@ -7,11 +7,11 @@ import (
 )
 
 /**
-* Well-performing, low garbage, skinny-memory random string generator.
-*
-* e.g.  randstr.RandStringBytesMaskImprSrcUnsafe(32);
-*
-* Ref: https://stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-go
+ * Well-performing, low garbage, skinny-memory, random string generator.
+ *
+ * e.g.  randstr.RandStringBytesMaskImprSrcUnsafe(32);
+ *
+ * Ref: https://stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-go
  */
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"

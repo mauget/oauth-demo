@@ -6,7 +6,6 @@ import (
 	"github.com/gorilla/mux"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"oauth-demo/domain/randstr"
@@ -28,7 +27,7 @@ func main() {
 	router.HandleFunc("/api/GoogleLogin", handleGoogleLogin).Methods("GET")
 	router.HandleFunc("/api/GoogleCallback", handleGoogleCallback).Methods("GET")
 
-	// Serve the UI from the build directory. Assumes we carried out an yarn build.
+	// Serve the UI from the build directory. Assumes we carried out a yarn build.
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./build")))
 
 	var gracefulStop = make(chan os.Signal)
@@ -48,6 +47,7 @@ func main() {
 
 }
 
+
 var (
 	googleOauthConfig = &oauth2.Config{
 		RedirectURL:  "http://localhost:8000/api/GoogleCallback",
@@ -57,19 +57,25 @@ var (
 			"https://www.googleapis.com/auth/userinfo.email"},
 		Endpoint: google.Endpoint,
 	}
-	// Some random string, random for each request
-	oauthStateString = randstr.RandStringBytesMaskImprSrcUnsafe(8)
+	// A random string, generated for each user
+	oauthStateString = randstr.RandStringBytesMaskImprSrcUnsafe(16)
+
+	// SPA redirect target
+	clientRedirectTail = "/#/oauth/"
 )
+
 
 func handleMain(w http.ResponseWriter, _ *http.Request) {
 	htmlIndex := "/"
 	_, _ = fmt.Fprintf(w, htmlIndex)
 }
 
+
 func handleGoogleLogin(w http.ResponseWriter, r *http.Request) {
 	url := googleOauthConfig.AuthCodeURL(oauthStateString)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
+
 
 func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	state := r.FormValue("state")
@@ -89,7 +95,15 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
+
+	// TODO save the token per-user for comparision to token sent with subsequent requests.
+
+	// Pass the token to the APP via a 303 redirect
+	session["test"] = token.AccessToken;
+	fmt.Printf("token '%s'\n", token.AccessToken)
+	http.Redirect(w, r, clientRedirectTail + token.AccessToken, http.StatusSeeOther)
+
+	/*response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
 
 	if err != nil {
 		_, _ = fmt.Fprintf(w, "Error: %s\n", err)
@@ -102,5 +116,5 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		fmt.Println("Panic")
-	}
+	}*/
 }

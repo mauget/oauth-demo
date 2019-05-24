@@ -1,25 +1,34 @@
 import React, {Component} from "react";
-import {BrowserRouter as Router, Link, Redirect, Route, withRouter} from "react-router-dom";
+import {HashRouter as Router, Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 import LoginPopup from './LoginPopup';
 
-const AuthExample = () => (
-    <Router>
-        <div>
-            <AuthButton/>
-            <ul>
-                <li>
-                    <Link to="/public">Public Page</Link>
-                </li>
-                <li>
-                    <Link to="/protected">Protected Page</Link>
-                </li>
-            </ul>
-            <Route path="/public" component={Public}/>
-            <Route path="/login" component={Login}/>
-            <PrivateRoute path="/protected" component={Protected}/>
-        </div>
-    </Router>
-);
+// Based on https://reacttraining.com/react-router/web/example/auth-workflow
+
+const AuthExample = () => {
+    let protectedLink = `/protected`;
+
+    return (
+        <Router>
+            <div>
+                <AuthButton/>
+                <ul>
+                    <li>
+                        <Link to="/oauth/asdfasdf">Public Page</Link>
+                    </li>
+                    <li>
+                        <Link to={protectedLink}>Protected Page</Link>
+                    </li>
+                </ul>
+                <Switch>
+                    <Route path="/public" component={Public}/>
+                    <Route path="/login" component={Login}/>
+                    <PrivateRoute path={protectedLink} component={Protected}/>
+                    <Route path="/oauth/:token" component={OAuth}/>
+                </Switch>
+            </div>
+        </Router>
+    )
+};
 
 
 const authenticator = {
@@ -76,6 +85,8 @@ const PrivateRoute = ({component: Component, ...rest}) => (
 const Public = () => <h3>Public</h3>;
 
 const Protected = () => <h3>Protected</h3>;
+
+const OAuth = ({match}) => <>{sessionStorage.token = match.params.token}{console.log(`token ${sessionStorage.token}`)}</>;
 
 // ===========================================================
 // Demo public/private modes:

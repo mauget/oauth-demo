@@ -28,4 +28,5 @@ yarn-error.log*
 ../github.com
 ../golang.org
 ../gopkg.in
+.env
 

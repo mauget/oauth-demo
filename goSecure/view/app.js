@@ -1,14 +1,17 @@
 (function () {
 
+
     // noinspection JSUnresolvedVariable,JSUnresolvedVariable
-    class Demo extends React.Component {
+    class App extends React.Component {
         constructor(props) {
             super(props);
+
+            // noinspection JSPotentiallyInvalidUsageOfThis
             this.state = {
-                liked: false,
                 userID: null,
                 password: null,
             };
+
         }
 
         logMessage = async () => {
@@ -21,12 +24,12 @@
         };
 
 
-        logIn = async ()=> {
+        logInHandler = async () => {
             const body = {userID: this.state.userID, password: this.state.password};
 
 
             try {
-                const {data} =await api.post('login', body);
+                const {data} = await api.post('login', body);
                 console.log(`Login response: ${data}`);
             } catch (e) {
                 console.error(e);
@@ -46,35 +49,55 @@
             this.setState({"password": evt.target.value})
         };
 
+        onTestSession = async () => {
+            try {
+                const {data} = await api.get('session');
+                console.log(`onTestSession response: ${data}`);
+            } catch (e) {
+                console.error(e);
+                alert('onTestSession failed');
+            }
+        };
+
 
         render() {
-            if (this.state.liked) {
-                return 'You liked this.';
-            }
+
+            // noinspection JSXNamespaceValidation
+            const renderLoginForm = (
+                <form onSubmit={this.logInHandler}>
+                    <label htmlFor={"userID"}>User ID:
+                        <input id={"userID"} onChange={this.onUserID} type={"text"}/>
+                    </label>
+                    <br/>
+                    <label htmlFor={"password"}>Password:
+                        <input id={"password"} type={"password"} onChange={this.onPassword}/>
+                    </label>
+                    <br/>
+                    <button type={"submit"}>Log In</button>
+                </form>
+            );
+
+            const renderLogout = <button onClick={this.logOut}>Log Out</button>;
+
+            const renderSessionTest = <button onClick={this.onTestSession}>Test Session</button>;
+
+            const renderLogFromServer = <button onClick={() => this.logMessage()}>Log Message</button>;
 
             // noinspection JSXNamespaceValidation,JSUnresolvedFunction
             return (
                 <div>
-                    <button onClick={() => this.setState({liked: true})}>Like</button>
-                    <button onClick={() => this.logMessage()}>Log Message</button>
+                    {renderLogFromServer}
 
                     <br/>
                     <br/>
-                    <form onSubmit={this.logIn}>
-                        <label htmlFor={"userID"}>User ID:
-                            <input id={"userID"} onChange={this.onUserID} type={"text"}/>
-                        </label>
-                        <br/>
-                        <label htmlFor={"password"}>Password:
-                            <input id={"password"} type={"password"} onChange={this.onPassword} />
-                        </label>
-                        <br/>
-                        <button type={"submit"}>Log In</button>
-                    </form>
+                    {renderLoginForm}
                     <br/>
                     <br/>
 
-                    <button onClick={() => this.logOut()}>Log Out</button>
+                    {renderLogout}
+                    <br/>
+                    <br/>
+                    {renderSessionTest}
                 </div>
             );
         }
@@ -82,12 +105,12 @@
 
     const domContainer = document.querySelector('#root');
     // noinspection JSUnresolvedVariable
-    ReactDOM.render(React.createElement(Demo), domContainer);
+    ReactDOM.render(React.createElement(App), domContainer);
 
     //===========================================================================
     // Client service:
 
-    const URL = `https://${location.hostname}:443/api/`;
+    const URL = `https://${location.hostname}:${location.port}/api/`;
 
     const api = axios.create({
         baseURL: URL,

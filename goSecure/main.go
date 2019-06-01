@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"log"
@@ -27,7 +28,7 @@ var userMap = make(map[string]UserStore)
 
 func main() {
 
-	const port = "443"
+	const tlsPort = "443"
 	const certsLoc = "certs"
 
 	userMap["Lou"] = UserStore{"Lou", "123456", ""}
@@ -47,19 +48,22 @@ func main() {
 	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("./view"))))
 	//<---------------
 
-	//----- Listen for bare http request, redirect to https
-	go httpsRedirect()
+	//----- Listen for bare http tlsPort 80 request, redirect to https
+	go httpsRedirectToTLS(tlsPort)
 
-	log.Printf("Starting  and listening on Port %s\n", port)
-	log.Fatal(http.ListenAndServeTLS(":"+port, certsLoc+"/server.crt", certsLoc+"/server.key", router))
+	//---- Run the secured server
+	log.Printf("Starting  and listening on Port %s\n", tlsPort)
+	log.Fatal(http.ListenAndServeTLS(":"+tlsPort, certsLoc+"/server.crt", certsLoc+"/server.key", router))
 
 }
 
-func httpsRedirect() {
-	// Redirect to https://localhost
+// Redirect to something like https://localhost:443/
+func httpsRedirectToTLS(port string) {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		//_, _ = fmt.Fprintf(w, "Hello, you've requested: %s\n", r.URL.Path)
-		http.Redirect(w, r, "https://localhost/", http.StatusSeeOther)
+		httpsURL := fmt.Sprintf("https://%s:%s/", "localhost", port)
+
+		log.Printf("Redirecting to %s (TLS)\n", httpsURL)
+		http.Redirect(w, r, httpsURL, http.StatusSeeOther)
 	})
 
 	_ = http.ListenAndServe(":80", nil)

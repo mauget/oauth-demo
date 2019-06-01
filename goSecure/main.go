@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fly-world/utils"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"log"
@@ -44,7 +43,7 @@ func main() {
 	router.HandleFunc("/api/logout", handleLogout).Methods("POST")
 	router.HandleFunc("/api/session", getSession).Methods("GET")
 
-	// Following enables serving files under http://localhost:443/<filename>, where "/" mappeed to "./view" dir
+	// Following enables serving files under https://localhost:443/<filename>, where "/" mapped to "./view" dir
 	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("./view"))))
 	//<---------------
 
@@ -56,7 +55,7 @@ func getTestMsg(w http.ResponseWriter, _ *http.Request) {
 
 	now := time.Now()
 
-	t := "Server time " + now.Format("Mon Jan _2 15:04:05 MST 2006")
+	t := now.Format("Mon Jan _2 15:04:05 MST 2006")
 
 	err := json.NewEncoder(w).Encode(t)
 	if nil != err {
@@ -72,7 +71,7 @@ func authenticate(userID string, password string) (UserStore, bool) {
 func handleLogin(w http.ResponseWriter, r *http.Request) {
 
 	// Start a new session
-	store := utils.SessionStore
+	store := sessionStore
 	session, err := store.New(r, goSecureSession)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

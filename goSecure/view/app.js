@@ -67,11 +67,11 @@
             const renderLoginForm = (
                 <form onSubmit={this.logInHandler}>
                     <label htmlFor={"userID"}>User ID:
-                        <input id={"userID"} onChange={this.onUserID} type={"text"}/>
+                        <input id={"userID"} onChange={this.onUserID} type={"text"} placeholder={"e.g. Test"}/>
                     </label>
                     <br/>
                     <label htmlFor={"password"}>Password:
-                        <input id={"password"} type={"password"} onChange={this.onPassword}/>
+                        <input id={"password"} type={"password"} onChange={this.onPassword} placeholder={"e.g. 123456"}/>
                     </label>
                     <br/>
                     <button type={"submit"}>Log In</button>
@@ -86,6 +86,7 @@
 
             return (
                 <div>
+                    <p>This demo assumes you accessed https://localhost, not http://localhost.</p>
                     {renderServerMsg}
 
                     <br/>

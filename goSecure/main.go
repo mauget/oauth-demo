@@ -47,8 +47,23 @@ func main() {
 	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("./view"))))
 	//<---------------
 
+	//----- Listen for bare http request, redirect to https
+	go httpsRedirect()
+
 	log.Printf("Starting  and listening on Port %s\n", port)
 	log.Fatal(http.ListenAndServeTLS(":"+port, certsLoc+"/server.crt", certsLoc+"/server.key", router))
+
+}
+
+func httpsRedirect() {
+	// Redirect to https://localhost
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		//_, _ = fmt.Fprintf(w, "Hello, you've requested: %s\n", r.URL.Path)
+		http.Redirect(w, r, "https://localhost/", http.StatusSeeOther)
+	})
+
+	_ = http.ListenAndServe(":80", nil)
+
 }
 
 func getTestMsg(w http.ResponseWriter, _ *http.Request) {

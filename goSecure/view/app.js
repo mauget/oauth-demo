@@ -86,7 +86,6 @@
 
             return (
                 <div>
-                    <p>This demo assumes you accessed https://localhost, not http://localhost.</p>
                     {renderServerMsg}
 
                     <br/>

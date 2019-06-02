@@ -28,11 +28,12 @@
             try {
                 const body = {userID: this.state.userID, password: this.state.password};
                 const {data} = await api.post('login', body);
-                console.log(`Login returned ${data}`);
-                alert('Login SUCCESS');
+                const msg = `Login returned ${data}`;
+                console.log(msg);
+                alert(msg);
             } catch (e) {
                 console.log(e);
-                alert('Login failed');
+                alert('Login error');
             }
         };
 

@@ -24,21 +24,20 @@
             }
         };
 
-
         logInHandler = async () => {
-            const body = {userID: this.state.userID, password: this.state.password};
-
-
             try {
+                const body = {userID: this.state.userID, password: this.state.password};
                 const {data} = await api.post('login', body);
-                console.log(`Login response: ${data}`);
+                console.log(`Login returned ${data}`);
+                alert('Login SUCCESS');
             } catch (e) {
-                console.error(e);
+                console.log(e);
                 alert('Login failed');
             }
         };
 
         logOut = async () => {
+            // noinspection JSUnresolvedFunction
             await api.post('logout');
         };
 
@@ -64,18 +63,20 @@
 
         render() {
 
+            // noinspection JSXNamespaceValidation
             const renderLoginForm = (
-                <form onSubmit={this.logInHandler}>
+                <div>
                     <label htmlFor={"userID"}>User ID:
                         <input id={"userID"} onChange={this.onUserID} type={"text"} placeholder={"e.g. Test"}/>
                     </label>
                     <br/>
                     <label htmlFor={"password"}>Password:
-                        <input id={"password"} type={"password"} onChange={this.onPassword} placeholder={"e.g. 123456"}/>
+                        <input id={"password"} type={"password"} onChange={this.onPassword}
+                               placeholder={"e.g. 123456"}/>
                     </label>
                     <br/>
-                    <button type={"submit"}>Log In</button>
-                </form>
+                    <button onClick={this.logInHandler}>Log In</button>
+                </div>
             );
 
             const renderLogout = <button onClick={this.logOut}>Log Out</button>;

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -23,19 +24,18 @@ type UserStore struct {
 	Token    string
 }
 
-// This could be a MongoDB collections
-var userMap = make(map[string]UserStore)
+// This could be a MongoDB collection
+var userMap, umErr = makeUserStore()
 
 func main() {
 
 	const tlsPort = "443"
 	const certsLoc = "certs"
 
-	userMap["Lou"] = UserStore{"Lou", "123456", ""}
-	userMap["Dave"] = UserStore{"Dave", "123456", ""}
-	userMap["Test"] = UserStore{"Test", "123456", ""}
-
-	log.Println("Initailzed userMap")
+	if umErr != nil {
+		panic(umErr)
+	}
+	log.Printf("UserMap: %v\n", userMap)
 
 	//------ router --->
 	router := mux.NewRouter()
@@ -49,7 +49,7 @@ func main() {
 	//<---------------
 
 	//----- Listen for bare http tlsPort 80 request, redirect to https
-	go httpsRedirectToTLS(tlsPort)
+	go httpRedirectToTLS(tlsPort)
 
 	//---- Run the secured server
 	log.Printf("Starting  and listening on Port %s\n", tlsPort)
@@ -57,8 +57,26 @@ func main() {
 
 }
 
-// Redirect to something like https://localhost:443/
-func httpsRedirectToTLS(port string) {
+func makeUserStore() (map[string]UserStore, error) {
+	um := make(map[string]UserStore)
+
+	names := [...]string{"Lou", "Dave", "Test"}
+	for i := 0; i < len(names); i++ {
+
+		// hash varies for given cleartext, in general
+		hash, err := hashPassword("123456")
+
+		if err != nil {
+			return nil, err
+		}
+		um[names[i]] = UserStore{names[i], hash, ""}
+	}
+
+	return um, nil
+}
+
+// Redirect https://localhost:80/ to https://localhost:443/
+func httpRedirectToTLS(port string) {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpsURL := fmt.Sprintf("https://%s:%s/", "localhost", port)
 
@@ -84,7 +102,7 @@ func getTestMsg(w http.ResponseWriter, _ *http.Request) {
 
 func authenticate(userID string, password string) (UserStore, bool) {
 	userEntry := userMap[userID]
-	return userEntry, (userEntry.UserID == userID) && (userEntry.Password == password)
+	return userEntry, (userEntry.UserID == userID) && checkPasswordHash(password, userEntry.Password)
 }
 
 func handleLogin(w http.ResponseWriter, r *http.Request) {
@@ -135,8 +153,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
-		log.Println("userMap", userMap)
-		_ = json.NewEncoder(w).Encode(u)
+		_ = json.NewEncoder(w).Encode(isMatch)
 
 	}
 
@@ -217,4 +234,18 @@ func randstr(n int) string {
 	}
 
 	return *(*string)(unsafe.Pointer(&b))
+}
+
+//--------- bcrypt functions
+
+func hashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
+}
+
+func checkPasswordHash(password, hash string) bool {
+	log.Printf("Matching plaintext password %v to hash %v\n", password, hash)
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	log.Printf("match is %v", err == nil)
+	return err == nil
 }

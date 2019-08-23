@@ -5,6 +5,8 @@ import (
 	"net/http"
 )
 
+// Browser address: https://localhost/hello
+
 const certs = "."
 
 // Ref: https://github.com/denji/golang-tls

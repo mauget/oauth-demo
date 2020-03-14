@@ -10,7 +10,7 @@ import (
 const certs = "."
 
 // Ref: https://github.com/denji/golang-tls
-func HelloServer(w http.ResponseWriter, req *http.Request) {
+func HelloServer(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	_, _ = w.Write([]byte("<h1>This is an example server.</h1>"))
 }
